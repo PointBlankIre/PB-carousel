@@ -43,7 +43,12 @@ array( 'title', 'thumbnail',  ),
 );
 }
 
-
+add_action( 'admin_enqueue_scripts', 'mw_enqueue_color_picker' );
+function mw_enqueue_color_picker( $hook_suffix ) {
+    // first check that $hook_suffix is appropriate for your admin page
+    wp_enqueue_style( 'wp-color-picker' );
+    wp_enqueue_script( 'my-script-handle', plugins_url('my-script.js', __FILE__ ), array( 'wp-color-picker' ), false, true );
+}
 
 add_action('do_meta_boxes', 'pb_carousel_image_box');
 function pb_carousel_image_box() {
@@ -73,6 +78,11 @@ esc_html( get_post_meta( $pb_carousel->ID,
 $desc_carousel =
 esc_html( get_post_meta( $pb_carousel->ID,
 'desc_carousel', true ) );
+
+$bgcolour_carousel =
+esc_html( get_post_meta( $pb_carousel->ID,
+'bgcolour_carousel', true ) );
+
 ?>
 
 <table>
@@ -88,6 +98,13 @@ value="<?php echo $desc_carousel; ?>" placeholder="Description here..." /></td>
 <td><input type="text" size="80"
 name="url_carousel_name"
 value="<?php echo $url_carousel; ?>" placeholder="http://" /></td>
+</tr>
+
+<tr>
+<td>Background colour for Carousel Item</td>
+<td><input type="text" size="80"
+name="bgcolour_carousel_name"
+value="<?php echo $bgcolour_carousel; ?>"  class="my-color-field"/></td>
 </tr>
 
 </table>
@@ -114,6 +131,12 @@ if ( isset( $_POST['desc_carousel_name'] ) &&
 $_POST['desc_carousel_name'] != '' ) {
 update_post_meta( $pb_carousel_id, 'desc_carousel',
 $_POST['desc_carousel_name'] );
+}
+
+if ( isset( $_POST['bgcolour_carousel_name'] ) &&
+$_POST['bgcolour_carousel_name'] != '' ) {
+update_post_meta( $pb_carousel_id, 'bgcolour_carousel',
+$_POST['bgcolour_carousel_name'] );
 }
 
 }
